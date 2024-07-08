@@ -1,6 +1,6 @@
 # Fastify HTTP Proxy example
 
-Just a quick example how to use @fastify/http-proxy with Fastify.
+Just a quick example how to use http-proxy-middleware with Fastify.
 
 ## How to run
 

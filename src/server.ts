@@ -11,21 +11,6 @@ const apiProxy = createProxyMiddleware({
   followRedirects: false,
 });
 
-const opts: RouteShorthandOptions = {
-  schema: {
-    response: {
-      200: {
-        type: 'object',
-        properties: {
-          pong: {
-            type: 'string'
-          }
-        }
-      }
-    }
-  }
-}
-
 server.all('/*', (req, reply) => {
   apiProxy(req.raw, reply.raw, (err) => {
     if (err) {
