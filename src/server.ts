@@ -54,7 +54,7 @@ server.all('/msite/action.php', (req, reply) => {
 
 server.all('/*', (req, reply) => {
   const requestPath = req.raw.url
-  if (requestPath?.match(/\.(css|js|png|jpg|gif|svg|ico)$/)) {
+  if (requestPath?.match(/\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2)$/)) {
     apiProxy(req.raw, reply.raw, (err) => {
       if (err) {
         reply.send(err)
