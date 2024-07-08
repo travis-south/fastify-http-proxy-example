@@ -1,13 +1,14 @@
 import Fastify, { FastifyInstance, RouteShorthandOptions } from 'fastify';
-import fastifyHttpProxy from '@fastify/http-proxy';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
 const server: FastifyInstance = Fastify({
   logger: true,
 })
 
-// Register the fastify-http-proxy plugin
-server.register(fastifyHttpProxy, {
-  upstream: 'https://www.8811188.net/msite/Maintenance',
+const apiProxy = createProxyMiddleware({
+  target: 'https://www.8811188.net/msite/Maintenance',
+  changeOrigin: true,
+  followRedirects: false,
 });
 
 const opts: RouteShorthandOptions = {
@@ -25,9 +26,13 @@ const opts: RouteShorthandOptions = {
   }
 }
 
-server.get('/ping', opts, async (request, reply) => {
-  return { pong: 'it worked!' }
-})
+server.all('/*', (req, reply) => {
+  apiProxy(req.raw, reply.raw, (err) => {
+    if (err) {
+      reply.send(err);
+    }
+  });
+});
 
 const start = async () => {
   try {
