@@ -26,9 +26,12 @@ const apiProxy = createProxyMiddleware({
       )
     },
     proxyRes: responseInterceptor(
-      async (responseBuffer, _proxyRes, _req, res) => {
+      async (responseBuffer, _proxyRes, req, res) => {
         const contentType = res.getHeader('content-type')
         if (contentType && contentType.toString().includes('text/html')) {
+          if (req.url === '/msite/Maintenance/') {
+            res.statusCode = 503 // Change this to 200 if ingress will handle the 503 status code else keep it as 503
+          }
           const response = responseBuffer.toString('utf8')
           return response.replace(
             '<base href="https://www.8811188.net/msite/Maintenance/">',
@@ -51,7 +54,7 @@ server.all('/msite/action.php', (req, reply) => {
 
 server.all('/*', (req, reply) => {
   const requestPath = req.raw.url
-  if (requestPath?.match(/\.(css|js|png|jpg|gif|svg)$/)) {
+  if (requestPath?.match(/\.(css|js|png|jpg|gif|svg|ico)$/)) {
     apiProxy(req.raw, reply.raw, (err) => {
       if (err) {
         reply.send(err)
