@@ -1,5 +1,5 @@
-import Fastify, { FastifyInstance } from 'fastify';
-import { createProxyMiddleware } from 'http-proxy-middleware';
+import Fastify, { FastifyInstance } from 'fastify'
+import { createProxyMiddleware } from 'http-proxy-middleware'
 
 const server: FastifyInstance = Fastify({
   logger: true,
@@ -12,11 +12,22 @@ const apiProxy = createProxyMiddleware({
 });
 
 server.all('/*', (req, reply) => {
-  apiProxy(req.raw, reply.raw, (err) => {
-    if (err) {
-      reply.send(err);
-    }
-  });
+  const requestPath = req.raw.url;
+  if (requestPath?.match(/\.(css|js|png|jpg|gif|svg)$/)) {
+    apiProxy(req.raw, reply.raw, (err) => {
+      if (err) {
+        reply.send(err);
+      }
+    });
+  } else if (requestPath !== '/') {
+    reply.redirect('/');
+  } else {
+    apiProxy(req.raw, reply.raw, (err) => {
+      if (err) {
+        reply.send(err);
+      }
+    });
+  }
 });
 
 const start = async () => {
