@@ -1,4 +1,4 @@
-import Fastify, { FastifyInstance, RouteShorthandOptions } from 'fastify';
+import Fastify, { FastifyInstance } from 'fastify';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
 const server: FastifyInstance = Fastify({
