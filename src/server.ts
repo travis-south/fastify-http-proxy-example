@@ -28,12 +28,12 @@ const apiProxy = createProxyMiddleware({
     proxyRes: responseInterceptor(
       async (responseBuffer, _proxyRes, req, res) => {
         const contentType = res.getHeader('content-type')
-        res.setHeader(
-          'Cache-Control',
-          'private, max-age=0, no-cache, must-revalidate, no-store',
-        )
-        res.setHeader('Pragma', 'no-cache')
         if (contentType && contentType.toString().includes('text/html')) {
+          res.setHeader(
+            'Cache-Control',
+            'private, max-age=0, no-cache, must-revalidate, no-store',
+          )
+          res.setHeader('Pragma', 'no-cache')
           if (req.url === '/msite/Maintenance/') {
             res.statusCode = 503 // Change this to 200 if ingress will handle the 503 status code else keep it as 503
             res.setHeader('Retry-After', '3600')
